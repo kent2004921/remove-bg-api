@@ -1,3 +1,4 @@
 flask==2.0.1
 rembg==2.0.50
 pillow==9.5.0
+werkzeug==2.0.3
