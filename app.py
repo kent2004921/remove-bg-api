@@ -1,12 +1,11 @@
 from flask import Flask, request, jsonify, send_file
 import os
+import io
+from PIL import Image
 from utils.background_removal import remove_background
 from utils.face_crop import crop_face
 
 app = Flask(__name__)
-
-UPLOAD_FOLDER = 'uploads'
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 @app.route('/test', methods=['GET'])
 def test():
@@ -18,13 +17,21 @@ def remove_background_api():
         return jsonify({'error': 'No image file provided'}), 400
 
     image = request.files['image']
-    input_path = os.path.join(UPLOAD_FOLDER, image.filename)
-    output_path = os.path.join(UPLOAD_FOLDER, f"bg_removed_{image.filename}")
+    try:
+        # 将上传的图片加载为 PIL 图像
+        input_image = Image.open(image)
+        input_path = io.BytesIO()
+        input_image.save(input_path, format=input_image.format)
+        input_path.seek(0)
 
-    image.save(input_path)
-    remove_background(input_path, output_path)
+        # 处理图片
+        output_path = io.BytesIO()
+        remove_background(input_path, output_path)
+        output_path.seek(0)
 
-    return send_file(output_path, mimetype='image/png')
+        return send_file(output_path, mimetype='image/png')
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/crop-face', methods=['POST'])
 def crop_face_api():
@@ -32,13 +39,21 @@ def crop_face_api():
         return jsonify({'error': 'No image file provided'}), 400
 
     image = request.files['image']
-    input_path = os.path.join(UPLOAD_FOLDER, image.filename)
-    output_path = os.path.join(UPLOAD_FOLDER, f"face_cropped_{image.filename}")
+    try:
+        # 将上传的图片加载为 PIL 图像
+        input_image = Image.open(image)
+        input_path = io.BytesIO()
+        input_image.save(input_path, format=input_image.format)
+        input_path.seek(0)
 
-    image.save(input_path)
-    crop_face(input_path, output_path)
+        # 处理图片
+        output_path = io.BytesIO()
+        crop_face(input_path, output_path)
+        output_path.seek(0)
 
-    return send_file(output_path, mimetype='image/png')
+        return send_file(output_path, mimetype='image/png')
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
