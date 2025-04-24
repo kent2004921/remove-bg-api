@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify, send_file
+from flask_cors import CORS
 import os
 import io
 from PIL import Image
@@ -6,6 +7,7 @@ from utils.background_removal import remove_background
 from utils.face_crop import crop_face
 
 app = Flask(__name__)
+CORS(app)  # 允许所有跨域
 
 @app.route('/test', methods=['GET'])
 def test():
@@ -18,13 +20,11 @@ def remove_background_api():
 
     image = request.files['image']
     try:
-        # 将上传的图片加载为 PIL 图像
         input_image = Image.open(image)
         input_path = io.BytesIO()
         input_image.save(input_path, format=input_image.format)
         input_path.seek(0)
 
-        # 处理图片
         output_path = io.BytesIO()
         remove_background(input_path, output_path)
         output_path.seek(0)
@@ -40,13 +40,11 @@ def crop_face_api():
 
     image = request.files['image']
     try:
-        # 将上传的图片加载为 PIL 图像
         input_image = Image.open(image)
         input_path = io.BytesIO()
         input_image.save(input_path, format=input_image.format)
         input_path.seek(0)
 
-        # 处理图片
         output_path = io.BytesIO()
         crop_face(input_path, output_path)
         output_path.seek(0)
