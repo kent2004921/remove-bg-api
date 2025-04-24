@@ -2,10 +2,10 @@ services:
   - type: web
     name: remove-bg-api
     env: python
-    runtime: python-3.10  # 指定 Python 版本，可根据您的 runtime.txt 调整
+    runtime: python-3.10
     buildCommand: "pip install -r requirements.txt"
     startCommand: "gunicorn -w 4 -b 0.0.0.0:$PORT app:app"
     envVars:
       - key: PORT
-        value: 10000  # 默认端口，Render 会覆盖此值
+        value: 10000
     autoDeploy: true
