@@ -1,4 +1,4 @@
-rembg
 flask
-onnxruntime
 flask-cors
+rembg
+onnxruntime
