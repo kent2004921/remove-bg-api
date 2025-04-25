@@ -1,6 +1,10 @@
+import os
 from flask import Flask, request, send_file
 from rembg import remove
 import io
+
+# 指定 rembg 使用本地模型目录
+os.environ["U2NET_HOME"] = os.path.join(os.path.dirname(__file__), "models")
 
 app = Flask(__name__)
 
