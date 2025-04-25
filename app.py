@@ -1,8 +1,8 @@
 import os
 from flask import Flask, request, send_file
+from flask_cors import CORS
 from rembg import remove
 import io
-from flask_cors import CORS  # 新增
 
 # 指定 rembg 使用本地模型目录
 os.environ["U2NET_HOME"] = os.path.join(os.path.dirname(__file__), "models")
@@ -27,4 +27,6 @@ def index():
     return 'rembg API is running.'
 
 if __name__ == '__main__':
+    # 打印 models 目录内容，方便 Render 日志排查
+    print("models 目录内容：", os.listdir(os.path.join(os.path.dirname(__file__), "models")))
     app.run(host='0.0.0.0', port=5000)
